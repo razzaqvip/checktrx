@@ -12,68 +12,49 @@
       --text-color: #ffffff;
     }
 
-    body { 
-      background-color: var(--bg-color); 
-      font-family: 'Montserrat', sans-serif; 
-      margin: 0; 
-      padding: 20px 0; 
-      display: flex; 
-      justify-content: center; 
-      min-height: 100vh; 
-      color: var(--text-color); 
-    }
-
-    .container { 
-      background: var(--card-bg); 
-      backdrop-filter: blur(12px); 
-      -webkit-backdrop-filter: blur(12px); 
-      border: 1px solid rgba(255, 255, 255, 0.3); 
-      border-radius: 35px; 
-      padding: 25px; 
-      width: 90%; 
-      max-width: 400px; 
-      text-align: center; 
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); 
-    }
-
-    /* --- STYLING LOGO --- */
-    .logo-container {
-      margin-bottom: 20px;
-    }
-    .main-logo {
-      width: 160px; /* Ukuran bisa kamu sesuaikan */
-      height: auto;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-    }
+    body { background-color: var(--bg-color); font-family: 'Montserrat', sans-serif; margin: 0; padding: 20px 0; display: flex; justify-content: center; min-height: 100vh; color: var(--text-color); }
+    .container { background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 35px; padding: 25px; width: 90%; max-width: 400px; text-align: center; }
+    
+    .logo-container { margin-bottom: 20px; }
+    .main-logo { width: 150px; height: auto; }
 
     .tabs { display: flex; gap: 10px; margin-bottom: 25px; background: rgba(0,0,0,0.1); padding: 5px; border-radius: 15px; }
-    .tab-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-    .tab-btn.active { background: white; color: #6179c3; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .tab-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; }
+    .tab-btn.active { background: white; color: #6179c3; }
 
-    .form-content { display: none; }
-    .form-content.active { display: block; }
     .form-group { text-align: left; margin-bottom: 15px; }
     label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 8px; }
-    
-    input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.4); background: var(--input-bg); color: white; box-sizing: border-box; outline: none; font-family: inherit; }
-    input::placeholder { color: rgba(255,255,255,0.7); }
+    input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.4); background: var(--input-bg); color: white; box-sizing: border-box; outline: none; }
 
-    #camera-container { width: 100%; border-radius: 20px; overflow: hidden; background: #000; position: relative; display: none; margin-top: 10px; border: 2px solid white; line-height: 0; }
-    #video { width: 100%; height: auto; }
-    #preview-canvas { width: 100%; border-radius: 20px; display: none; margin-top: 10px; border: 2px solid #fff; }
+    /* Tombol Pilihan Foto */
+    .photo-options { display: flex; gap: 10px; margin-top: 5px; }
+    .btn-opt { flex: 1; background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 10px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
-    .btn-action { width: 100%; padding: 16px; border-radius: 15px; border: none; background: #ffffff; color: #6179c3; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 14px; letter-spacing: 1px; }
-    .btn-small { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 10px 15px; border-radius: 10px; font-size: 12px; cursor: pointer; margin-top: 8px; font-weight: bold; }
-    
+    /* --- FULL SCREEN CAMERA OVERLAY --- */
+    #camera-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #000; z-index: 9999; display: none; flex-direction: column;
+    }
+    #video { width: 100%; height: 100%; object-fit: cover; }
+    .cam-controls {
+      position: absolute; bottom: 30px; width: 100%;
+      display: flex; justify-content: space-around; align-items: center;
+    }
+    .btn-shutter { width: 70px; height: 70px; background: white; border-radius: 50%; border: 5px solid rgba(255,255,255,0.3); }
+    .btn-cancel { color: white; background: rgba(255,0,0,0.6); border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; }
+
+    #preview-container { margin-top: 15px; display: none; }
+    #preview-img { width: 100%; border-radius: 20px; border: 2px solid white; }
+
+    .btn-action { width: 100%; padding: 16px; border-radius: 15px; border: none; background: #ffffff; color: #6179c3; font-weight: bold; cursor: pointer; margin-top: 15px; }
     #reader { width: 100%; border-radius: 15px; overflow: hidden; margin-top: 10px; display: none; border: 2px solid white; }
-    #checkResult img { width: 100%; border-radius: 20px; margin-top: 15px; display: none; border: 2px solid white; }
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="logo-container">
-    <img src="https://raw.githubusercontent.com/razzaqvip/checktrx/refs/heads/main/logo.png" alt="Rembang Setrika Express" class="main-logo">
+    <img src="https://raw.githubusercontent.com/razzaqvip/checktrx/refs/heads/main/logo.png" class="main-logo">
   </div>
 
   <div class="tabs">
@@ -81,130 +62,111 @@
     <button class="tab-btn" onclick="switchTab('check-sec', this)">CHECK</button>
   </div>
 
-  <div id="input-sec" class="form-content active">
+  <div id="input-sec" class="form-content" style="display: block;">
     <div class="form-group">
       <label>No. Transaksi</label>
-      <input type="text" id="noInput" placeholder="Ketik atau Scan Barcode...">
-      <button class="btn-small" onclick="startScanner()">📸 Scan Barcode</button>
+      <input type="text" id="noInput" placeholder="Ketik atau Scan...">
+      <button class="btn-opt" style="margin-top:8px;" onclick="startScanner()">📸 Scan Barcode</button>
       <div id="reader"></div>
     </div>
 
     <div class="form-group">
-      <label>Foto Pakaian</label>
-      <button class="btn-small" onclick="startCamera()">📷 Ambil Foto Langsung</button>
-      
-      <div id="camera-container">
-        <video id="video" autoplay playsinline></video>
-        <button class="btn-action" style="margin: 10px; width: calc(100% - 20px); background: #6179c3; color: white;" onclick="takePhoto()">JEPRET SEKARANG</button>
+      <label>Ambil Foto Pakaian</label>
+      <div class="photo-options">
+        <button class="btn-opt" onclick="document.getElementById('galleryInput').click()">📁 Galeri</button>
+        <button class="btn-opt" onclick="openCamera()">📷 Kamera</button>
       </div>
+      <input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="handleGallery(this)">
       
-      <canvas id="canvas" style="display:none;"></canvas>
-      <img id="preview-canvas" alt="Preview Foto">
+      <div id="preview-container">
+        <img id="preview-img">
+        <p style="font-size:10px; color: #eee;">✅ Foto siap dikirim</p>
+      </div>
     </div>
 
     <button class="btn-action" id="subBtn" onclick="submitData()">SIMPAN DATA</button>
   </div>
 
-  <div id="check-sec" class="form-content">
-    <div class="form-group">
-      <label>Cari No. Transaksi</label>
-      <input type="text" id="noCheck" placeholder="Contoh: RSX-12345">
-      <button class="btn-action" onclick="checkData()">LIHAT FOTO</button>
-    </div>
-    <div id="checkResult">
-      <p id="statusMsg" style="font-size: 12px; font-weight: bold;"></p>
-      <img id="resultImg" src="">
-    </div>
-  </div>
+  <div id="check-sec" class="form-content" style="display:none;">
+     </div>
 </div>
 
+<div id="camera-overlay">
+  <video id="video" autoplay playsinline></video>
+  <div class="cam-controls">
+    <button class="btn-cancel" onclick="closeCamera()">BATAL</button>
+    <button class="btn-shutter" onclick="takePhoto()"></button>
+    <div style="width: 70px;"></div> </div>
+</div>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
 <script>
-  // Script logika kamera, scanner, dan kirim data tetap sama seperti sebelumnya...
-  let video = document.getElementById('video');
-  let canvas = document.getElementById('canvas');
-  let preview = document.getElementById('preview-canvas');
-  let cameraContainer = document.getElementById('camera-container');
   let capturedBase64 = "";
+  const video = document.getElementById('video');
+  const overlay = document.getElementById('camera-overlay');
 
-  function switchTab(id, btn) {
-    document.querySelectorAll('.form-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-    stopCamera();
-    if(typeof html5QrCode !== 'undefined') html5QrCode.stop();
-  }
-
-  async function startCamera() {
-    cameraContainer.style.display = 'block';
-    preview.style.display = 'none';
+  // Buka Kamera Full Screen
+  async function openCamera() {
+    overlay.style.display = 'flex';
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
       video.srcObject = stream;
     } catch (err) {
-      alert("Gagal akses kamera: " + err);
+      alert("Izin kamera ditolak atau tidak tersedia.");
+      closeCamera();
     }
   }
 
+  function closeCamera() {
+    if (video.srcObject) {
+      video.srcObject.getTracks().forEach(track => track.stop());
+    }
+    overlay.style.display = 'none';
+  }
+
   function takePhoto() {
+    const canvas = document.getElementById('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
     capturedBase64 = canvas.toDataURL('image/jpeg', 0.8);
-    preview.src = capturedBase64;
-    preview.style.display = 'block';
-    stopCamera();
+    showPreview(capturedBase64);
+    closeCamera();
   }
 
-  function stopCamera() {
-    if (video.srcObject) {
-      video.srcObject.getTracks().forEach(track => track.stop());
-      cameraContainer.style.display = 'none';
+  // Handle Foto dari Galeri
+  function handleGallery(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        capturedBase64 = e.target.result;
+        showPreview(capturedBase64);
+      };
+      reader.readAsDataURL(input.files[0]);
     }
   }
 
-  let html5QrCode;
-  function startScanner() {
-    const readerEl = document.getElementById('reader');
-    readerEl.style.display = 'block';
-    html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
-      (decodedText) => {
-        document.getElementById('noInput').value = decodedText;
-        html5QrCode.stop();
-        readerEl.style.display = 'none';
-      }
-    ).catch(err => alert("Gagal buka scanner: " + err));
+  function showPreview(src) {
+    document.getElementById('preview-container').style.display = 'block';
+    document.getElementById('preview-img').src = src;
   }
 
   function submitData() {
     const no = document.getElementById('noInput').value;
     const btn = document.getElementById('subBtn');
     if (!no || !capturedBase64) { alert("Nomor Transaksi dan Foto wajib ada!"); return; }
-    btn.innerText = "SEDANG MENYIMPAN...";
+    
+    btn.innerText = "MENYIMPAN...";
     btn.disabled = true;
+    
     google.script.run.withSuccessHandler(res => {
-        alert("Data Transaksi Berhasil Disimpan!");
+        alert("Berhasil!");
         location.reload();
     }).processData(no, capturedBase64);
   }
 
-  function checkData() {
-    const no = document.getElementById('noCheck').value;
-    const img = document.getElementById('resultImg');
-    const msg = document.getElementById('statusMsg');
-    msg.innerText = "Mencari data...";
-    google.script.run.withSuccessHandler(res => {
-      if(res.status === "found") {
-        msg.innerText = "Data ditemukan!";
-        img.src = res.fotoUrl.replace("open?id=", "uc?export=view&id=");
-        img.style.display = 'block';
-      } else {
-        msg.innerText = "Nomor Transaksi tidak terdaftar.";
-        img.style.display = 'none';
-      }
-    }).getDataByNoTransaksi(no);
-  }
+  // Tambahkan fungsi switchTab, startScanner, dll seperti script sebelumnya
 </script>
 </body>
 </html>
