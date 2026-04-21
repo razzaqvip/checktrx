@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    :root {
+      --bg-color: #6179c3;
+      --card-bg: rgba(255, 255, 255, 0.25);
+      --input-bg: rgba(255, 255, 255, 0.3);
+      --text-color: #ffffff;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 20px 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: var(--text-color);
+    }
+
+    .container {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 30px;
+      padding: 25px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      background: rgba(0,0,0,0.1);
+      padding: 5px;
+      border-radius: 15px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .tab-btn.active {
+      background: white;
+      color: #6179c3;
+    }
+
+    .form-content { display: none; }
+    .form-content.active { display: block; }
+
+    .form-group { text-align: left; margin-bottom: 15px; }
+    label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 5px; }
+    
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: var(--input-bg);
+      color: white;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: #ffffff;
+      color: #6179c3;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #reader {
+      width: 100%;
+      border-radius: 15px;
+      overflow: hidden;
+      margin-top: 10px;
+      display: none;
+    }
+
+    #resultImg {
+      width: 100%;
+      border-radius: 15px;
+      margin-top: 15px;
+      display: none;
+      border: 2px solid white;
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 12px;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('input-sec', this)">INPUT</button>
+    <button class="tab-btn" onclick="switchTab('check-sec', this)">CHECK</button>
+  </div>
+
+  <div id="input-sec" class="form-content active">
+    <form id="inputForm">
+      <div class="form-group">
+        <label>No. Transaksi</label>
+        <input type="text" name="noTransaksi" id="noInput" placeholder="Ketik atau Scan..." required>
+        <button type="button" class="secondary-btn" onclick="startScanner()">📸 Buka Scanner</button>
+        <div id="reader"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Foto (Kamera/Galeri)</label>
+        <input type="file" name="foto" accept="image/*" capture="environment" required>
+      </div>
+
+      <button type="submit" class="btn-action" id="subBtn">SIMPAN DATA</button>
+    </form>
+  </div>
+
+  <div id="check-sec" class="form-content">
+    <div class="form-group">
+      <label>Cari No. Transaksi</label>
+      <input type="text" id="noCheck" placeholder="Masukkan nomor...">
+      <button class="btn-action" onclick="checkData()">CARI FOTO</button>
+    </div>
+    <div id="checkResult">
+      <p id="statusMsg" style="font-size: 13px;"></p>
+      <img id="resultImg" src="" alt="Hasil Foto">
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('.form-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    // Stop scanner jika pindah tab
+    if(typeof html5QrCode !== 'undefined') html5QrCode.stop();
+  }
+
+  // LOGIKA SCANNER
+  let html5QrCode;
+  function startScanner() {
+    const readerEl = document.getElementById('reader');
+    readerEl.style.display = 'block';
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+      { facingMode: "environment" }, 
+      { fps: 10, qrbox: { width: 250, height: 150 } },
+      (decodedText) => {
+        document.getElementById('noInput').value = decodedText;
+        html5QrCode.stop();
+        readerEl.style.display = 'none';
+      }
+    );
+  }
+
+  // LOGIKA INPUT
+  document.getElementById('inputForm').onsubmit = function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('subBtn');
+    btn.innerText = "MENGIRIM...";
+    btn.disabled = true;
+
+    google.script.run
+      .withSuccessHandler(res => {
+        alert("Data Berhasil Disimpan!");
+        this.reset();
+        btn.innerText = "SIMPAN DATA";
+        btn.disabled = false;
+      })
+      .processForm(this);
+  };
+
+  // LOGIKA CHECK
+  function checkData() {
+    const no = document.getElementById('noCheck').value;
+    const msg = document.getElementById('statusMsg');
+    const img = document.getElementById('resultImg');
+    
+    msg.innerText = "Mencari...";
+    img.style.display = 'none';
+
+    google.script.run
+      .withSuccessHandler(res => {
+        if(res.status === "found") {
+          msg.innerText = "Data ditemukan!";
+          img.src = res.fotoUrl.replace("open?", "uc?export=view&"); // Format URL agar bisa tampil
+          img.style.display = 'block';
+        } else {
+          msg.innerText = "Nomor Transaksi tidak ditemukan.";
+        }
+      })
+      .getDataByNoTransaksi(no);
+  }
+</script>
+
+</body>
+</html>
