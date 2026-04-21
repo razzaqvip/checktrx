@@ -1,5 +1,5 @@
 // GANTI DENGAN LINK RAW index.html KAMU DARI GITHUB
-const GITHUB_URL = "https://raw.githubusercontent.com/razzaqvip/checktrx/main/index.html";
+const GITHUB_URL = "https://raw.githubusercontent.com/razzaqvip/checktrx/refs/heads/main/index.html";
 
 function doGet() {
   try {
